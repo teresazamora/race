@@ -16,18 +16,18 @@ public class RacerParser {
     }
 
     public Racer inputRacerList(Stream<String> startFile, Stream<String> endFile, Stream<String> abbreviationsFile) {
-        racer.setRacers(racersTable(startFile, endFile, abbreviationsFile));
+        racer.setRacer(racersTable(startFile, endFile, abbreviationsFile));
         return racer;
     }
 
-    private Map<String, LocalTime> abbreviationTime(Stream<String> startFile) {
-        return startFile.map(part -> part.replace("2018-05-24", "")).map(parts -> parts.split("_"))
+    private Map<String, LocalTime> getTimeList(Stream<String> file) {
+        return file.map(part -> part.replace("2018-05-24", "")).map(parts -> parts.split("_"))
                 .collect(Collectors.toMap(abb -> abb[0], time -> LocalTime.parse(time[1])));
     }
 
     private List<Racer> racersTable(Stream<String> startFile, Stream<String> endFile, Stream<String> abbreviationFile) {
-        Map<String, LocalTime> startTime = abbreviationTime(startFile);
-        Map<String, LocalTime> endTime = abbreviationTime(endFile);
+        Map<String, LocalTime> startTime = getTimeList(startFile);
+        Map<String, LocalTime> endTime = getTimeList(endFile);
 
         return abbreviationFile.map(lines -> lines.split("_")).map(
                 line -> new Racer(line[1], line[2], Duration.between(startTime.get(line[0]), endTime.get(line[0]))))

@@ -7,10 +7,10 @@ import java.util.stream.IntStream;
 
 public class Formatter {
 
-    public List<String> finalPrint(Racer racer) {
+    public List<String> finalPrint(Racer racer, int topPilots) {
         List<String> racers = racers(racer);
         String addDashes = addLine("-", racers.get(0).length());
-        racers.add(15, addDashes);
+        racers.add(topPilots, addDashes);
         return racers;
     }
 
@@ -25,7 +25,7 @@ public class Formatter {
     }
 
     private List<String> formatTime(Racer racer) {
-        return racer.getRacers().stream().sorted(Comparator.comparing(Racer::getTime))
+        return racer.getRacer().stream().sorted(Comparator.comparing(Racer::getTime))
                 .map(racerList -> "|" + racerList.getTime()).map(time -> time.replaceAll("[PTS]", ""))
                 .map(time -> time.replace("M", ":")).collect(Collectors.toList());
 
@@ -45,12 +45,12 @@ public class Formatter {
 
     private List<String> pilotName(Racer racer) {
 
-        return racer.getRacers().stream().sorted(Comparator.comparing(Racer::getTime)).map(Racer::getName)
+        return racer.getRacer().stream().sorted(Comparator.comparing(Racer::getTime)).map(Racer::getName)
                 .collect(Collectors.toList());
     }
 
     private List<String> cars(Racer racer) {
-        return racer.getRacers().stream().sorted(Comparator.comparing(Racer::getTime))
+        return racer.getRacer().stream().sorted(Comparator.comparing(Racer::getTime))
                 .map(racerList -> "|" + racerList.getTeam() + " ").collect(Collectors.toList());
     }
 

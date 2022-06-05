@@ -42,12 +42,12 @@ public class RacerParserTest {
     }
 
     public List<Racer> racersTest() throws IOException {
-        ReaderFile readerFile = new ReaderFile();
+        FileReader readerFile = new FileReader();
         Stream<String> startFile = (readerFile.readFile("start.log")).stream();
         Stream<String> endFile = (readerFile.readFile("end.log")).stream();
         Stream<String> abbreviationFile = (readerFile.readFile("abbreviations.txt")).stream();
         RacerParser racerParser = new RacerParser();
         Racer racer = racerParser.inputRacerList(startFile, endFile, abbreviationFile);
-        return racer.getRacers();
+        return racer.getRacer();
     }
 }

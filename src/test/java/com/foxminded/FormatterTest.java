@@ -13,7 +13,7 @@ public class FormatterTest {
     @Test
     public void testPrettyFormat() throws IOException {
         Formatter formatter = new Formatter();
-        List<String> actual = formatter.finalPrint(racersTest());
+        List<String> actual = formatter.finalPrint(racersTest(),15);
         List<String> expected = Arrays.asList(" 1.Sebastian Vettel |FERRARI                   |1:4.415",
                 " 2.Daniel Ricciardo |RED BULL RACING TAG HEUER |1:12.013",
                 " 3.Valtteri Bottas  |MERCEDES                  |1:12.434",
@@ -38,7 +38,7 @@ public class FormatterTest {
     }
 
     public Racer racersTest() throws IOException {
-        ReaderFile readerFile = new ReaderFile();
+        FileReader readerFile = new FileReader();
         Stream<String> startFile = (readerFile.readFile("start.log")).stream();
         Stream<String> endFile = (readerFile.readFile("end.log")).stream();
         Stream<String> abbreviationFile = (readerFile.readFile("abbreviations.txt")).stream();

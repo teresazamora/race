@@ -5,17 +5,18 @@ import java.time.Duration;
 import java.util.List;
 
 public class Racer {
+    
     private final String name;
     private final String team;
     private final Duration time;
-    private List<Racer> racers;
+    private List<Racer> infoRacer;
 
-    public List<Racer> getRacers() {
-        return racers;
+    public List<Racer> getRacer() {
+        return infoRacer;
     }
 
-    public void setRacers(List<Racer> racers) {
-        this.racers = racers;
+    public void setRacer(List<Racer> infoRacer) {
+        this.infoRacer = infoRacer;
     }
 
     public Racer(String name, String team, Duration time) {
