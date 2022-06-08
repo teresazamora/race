@@ -1,60 +1,40 @@
 package com.foxminded;
 
-import java.util.Comparator;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class Formatter {
+    public String format(List<Racer> racers, int topPilots) {
+        StringBuilder result = new StringBuilder();
 
-    public List<String> finalPrint(Racer racer, int topPilots) {
-        List<String> racers = racers(racer);
-        String addDashes = addLine("-", racers.get(0).length());
-        racers.add(topPilots, addDashes);
-        return racers;
+        List<Racer> sortedRacers = racers.stream().sorted(comparing(Racer::getTime)).collect(toList());
+
+        int nameMaxLength = getMaxValue(sortedRacers, Racer::getName);
+        int teamMaxLength = getMaxValue(sortedRacers, Racer::getTeam);
+        int maxLengthLine = nameMaxLength + teamMaxLength + racers.size();
+        String formatter = "%2d.%-" + nameMaxLength + "s|%-" + teamMaxLength + "s|%1d:%02d.%03d";
+
+        for (int i = 0; i < sortedRacers.size(); i++) {
+            if (i == topPilots) {
+                result.append(repeat("-", maxLengthLine)).append(System.lineSeparator());
+            }
+            result.append(String.format(formatter, i + 1, sortedRacers.get(i).getName(), sortedRacers.get(i).getTeam(),
+                    sortedRacers.get(i).getTime().toMinutes(), sortedRacers.get(i).getTime().getSeconds() % 60,
+                    sortedRacers.get(i).getTime().toMillis() % 1000)).append(System.lineSeparator());
+        }
+        return result.toString();
     }
 
-    private List<String> racers(Racer racer) {
-        List<String> pilotName = formatNames(racer);
-        List<String> carTeam = formatCars(racer);
-        List<String> time = formatTime(racer);
-
-        return IntStream.range(0, pilotName.size())
-                .mapToObj(i -> String.format("%2d.", (i + 1)) + pilotName.get(i) + carTeam.get(i) + time.get(i))
-                .collect(Collectors.toList());
+    public static String repeat(String str, int times) {
+        return Stream.generate(() -> str).limit(times).collect(joining());
     }
 
-    private List<String> formatTime(Racer racer) {
-        return racer.getRacer().stream().sorted(Comparator.comparing(Racer::getTime))
-                .map(racerList -> "|" + racerList.getTime()).map(time -> time.replaceAll("[PTS]", ""))
-                .map(time -> time.replace("M", ":")).collect(Collectors.toList());
-
-    }
-
-    private List<String> formatCars(Racer racer) {
-        List<String> carFormat = cars(racer);
-        int lineLength = carFormat.stream().mapToInt(String::length).max().getAsInt();
-        return carFormat.stream().map(car -> String.format("%-" + lineLength + "s", car)).collect(Collectors.toList());
-    }
-
-    private List<String> formatNames(Racer racer) {
-        List<String> pilots = pilotName(racer);
-        int lineLength = pilots.stream().mapToInt(String::length).max().getAsInt();
-        return pilots.stream().map(name -> String.format("%-" + lineLength + "s", name)).collect(Collectors.toList());
-    }
-
-    private List<String> pilotName(Racer racer) {
-
-        return racer.getRacer().stream().sorted(Comparator.comparing(Racer::getTime)).map(Racer::getName)
-                .collect(Collectors.toList());
-    }
-
-    private List<String> cars(Racer racer) {
-        return racer.getRacer().stream().sorted(Comparator.comparing(Racer::getTime))
-                .map(racerList -> "|" + racerList.getTeam() + " ").collect(Collectors.toList());
-    }
-
-    private String addLine(String format, int number) {
-        return IntStream.range(0, number).mapToObj(i -> format).collect(Collectors.joining());
+    private int getMaxValue(List<Racer> racers, Function<Racer, String> func) {
+        return racers.stream().map(func).mapToInt(String::length).max().getAsInt();
     }
 }

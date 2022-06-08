@@ -1,29 +1,22 @@
 package com.foxminded;
 
-import java.io.File;
+import static java.nio.file.Files.lines;
+import static java.nio.file.Paths.get;
+
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class FileReader {
 
-    public List<String> readFile(String fileName) {
-
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        URL url = classLoader.getResource(fileName);
-        File file = new File(url.getFile());
-        List<String> text = new ArrayList<>();
-
-        try (Stream<String> stream = Files.lines(Paths.get(file.getAbsolutePath()))) {
-            text = stream.collect(Collectors.toList());
-        } catch (IOException e) {
-            e.printStackTrace();
+    public List<String> readFile(String filename) {
+        List<String> content;
+        try {
+            content = lines(get(getClass().getClassLoader().getResource(filename).toURI())).collect(Collectors.toList());
+        } catch (IOException | URISyntaxException e) {
+            throw new RuntimeException(e);
         }
-        return text;
+        return content;
     }
 }

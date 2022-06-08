@@ -1,8 +1,8 @@
 package com.foxminded;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Stream;
 
 public class Main {
 
@@ -14,12 +14,12 @@ public class Main {
         RacerParser racerParser = new RacerParser();
         FileReader fileReader = new FileReader();
 
-        Stream<String> startFile = (fileReader.readFile("start.log")).stream();
-        Stream<String> endFile = (fileReader.readFile("end.log")).stream();
-        Stream<String> abbreviationFile = (fileReader.readFile("abbreviations.txt")).stream();
+        List<String> startFile = (fileReader.readFile("start.log"));
+        List<String> endFile = (fileReader.readFile("end.log"));
+        List<String> abbreviationFile = (fileReader.readFile("abbreviations.txt"));
 
-        Racer racer = racerParser.inputRacerList(startFile, endFile, abbreviationFile);
+        List<Racer> racer = racerParser.racersTable(startFile, endFile, abbreviationFile);
         Formatter formatter = new Formatter();
-        formatter.finalPrint(racer, topPilots).forEach(System.out::println);
+        System.out.println(formatter.format(racer, topPilots));
     }
 }

@@ -1,36 +1,27 @@
 package com.foxminded;
 
 import java.time.Duration;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class RacerParser {
+    static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss.SSS");
 
-    private Racer racer;
+    public List<Racer> racersTable(List<String> startFile, List<String> endFile, List<String> abbreviationFile) {
+        Map<String, LocalDateTime> startTime = getTimeList(startFile);
+        Map<String, LocalDateTime> endTime = getTimeList(endFile);
 
-    public RacerParser() {
-        this.racer = new Racer(null, null, null);
-    }
-
-    public Racer inputRacerList(Stream<String> startFile, Stream<String> endFile, Stream<String> abbreviationsFile) {
-        racer.setRacer(racersTable(startFile, endFile, abbreviationsFile));
-        return racer;
-    }
-
-    private Map<String, LocalTime> getTimeList(Stream<String> file) {
-        return file.map(part -> part.replace("2018-05-24", "")).map(parts -> parts.split("_"))
-                .collect(Collectors.toMap(abb -> abb[0], time -> LocalTime.parse(time[1])));
-    }
-
-    private List<Racer> racersTable(Stream<String> startFile, Stream<String> endFile, Stream<String> abbreviationFile) {
-        Map<String, LocalTime> startTime = getTimeList(startFile);
-        Map<String, LocalTime> endTime = getTimeList(endFile);
-
-        return abbreviationFile.map(lines -> lines.split("_")).map(
+        return abbreviationFile.stream().map(lines -> lines.split("_")).map(
                 line -> new Racer(line[1], line[2], Duration.between(startTime.get(line[0]), endTime.get(line[0]))))
                 .collect(Collectors.toList());
     }
+
+    private Map<String, LocalDateTime> getTimeList(List<String> timeFile) {
+        return timeFile.stream().collect(Collectors.toMap(line -> line.substring(0, 3),
+                line -> LocalDateTime.parse(line.substring(3), FORMATTER)));
+    }
+
 }
