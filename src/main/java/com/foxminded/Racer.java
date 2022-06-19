@@ -1,14 +1,12 @@
 package com.foxminded;
 
-import java.time.Duration;
-
 public class Racer {
 
     private final String name;
     private String team;
-    private Duration time;
+    private Long time;
 
-    public Racer(String name, String team, Duration time) {
+    public Racer(String name, String team, Long time) {
         this.name = name;
         this.team = team;
         this.time = time;
@@ -22,7 +20,7 @@ public class Racer {
         return team;
     }
 
-    public Duration getTime() {
+    public Long getTime() {
         return time;
     }
 }

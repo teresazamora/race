@@ -13,7 +13,8 @@ public class FileReader {
     public List<String> readFile(String filename) {
         List<String> content;
         try {
-            content = lines(get(getClass().getClassLoader().getResource(filename).toURI())).collect(Collectors.toList());
+            content = lines(get(getClass().getClassLoader().getResource(filename).toURI()))
+                    .collect(Collectors.toList());
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e);
         }

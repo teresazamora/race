@@ -1,32 +1,34 @@
 package com.foxminded;
 
-import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
-
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class Formatter {
-    public String format(List<Racer> racers, int topPilots) {
+
+    public String format(List<Racer> racers, int topRacers) {
         StringBuilder result = new StringBuilder();
 
-        List<Racer> sortedRacers = racers.stream().sorted(comparing(Racer::getTime)).collect(toList());
+        int nameMaxLength = getMaxValue(racers, Racer::getName);
+        int teamMaxLength = getMaxValue(racers, Racer::getTeam);
+        int maxLengthLine = nameMaxLength + nameMaxLength + teamMaxLength;
 
-        int nameMaxLength = getMaxValue(sortedRacers, Racer::getName);
-        int teamMaxLength = getMaxValue(sortedRacers, Racer::getTeam);
-        int maxLengthLine = nameMaxLength + teamMaxLength + racers.size();
-        String formatter = "%2d.%-" + nameMaxLength + "s|%-" + teamMaxLength + "s|%1d:%02d.%03d";
+        String formatter = "%1$-" + nameMaxLength + "s| %2$-" + teamMaxLength + "s| %3$tM:%3$tS.%3$tL";
+        String positionFormatter = "%2d";
 
-        for (int i = 0; i < sortedRacers.size(); i++) {
-            if (i == topPilots) {
-                result.append(repeat("-", maxLengthLine)).append(System.lineSeparator());
+        AtomicInteger counter = new AtomicInteger();
+        racers.stream().sorted(Comparator.comparing(Racer::getTime)).forEach(racer -> {
+            int position = counter.incrementAndGet();
+            result.append(String.format(positionFormatter, position) + ". ")
+                    .append(String.format(formatter, racer.getName(), racer.getTeam(), racer.getTime())
+                            + System.lineSeparator());
+            if (position == topRacers) {
+                result.append(repeat("-", maxLengthLine) + System.lineSeparator());
             }
-            result.append(String.format(formatter, i + 1, sortedRacers.get(i).getName(), sortedRacers.get(i).getTeam(),
-                    sortedRacers.get(i).getTime().toMinutes(), sortedRacers.get(i).getTime().getSeconds() % 60,
-                    sortedRacers.get(i).getTime().toMillis() % 1000)).append(System.lineSeparator());
-        }
+        });
         return result.toString();
     }
 

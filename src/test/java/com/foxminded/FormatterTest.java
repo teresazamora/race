@@ -2,37 +2,34 @@ package com.foxminded;
 
 import static org.junit.Assert.*;
 
-import java.time.Duration;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 public class FormatterTest {
+
     private final Formatter formatter = new Formatter();
+    List<Racer> racersList = Arrays.asList(new Racer("Daniel Ricciardo", "RED BULL RACING TAG HEUER", 20000L),
+            new Racer("Sebastian Vettel", "FERRARI", 10000L),
+            new Racer("Stoffel Vandoorne", "MCLAREN RENAULT", 30000L));
 
     @Test
-    void givenOneRacer_whenFormatData_thenReturnOneString() {
-        List<Racer> expected = new ArrayList<>();
-        expected.add(new Racer("Sebastian Vettel", "FERRARI", Duration.parse("PT1M4.415S")));
-        String expectedString = " 1.Sebastian Vettel|FERRARI|1:04.415" + System.lineSeparator();
-        String actualString = formatter.format(expected, 15);
-        assertEquals(actualString, expectedString);
+    void givenThreeRacers_whenFormatTime_thenReturnSorted() {
+        String expected = " 1. Sebastian Vettel | FERRARI                  | 00:10.000" + System.lineSeparator()
+                + " 2. Daniel Ricciardo | RED BULL RACING TAG HEUER| 00:20.000" + System.lineSeparator()
+                + " 3. Stoffel Vandoorne| MCLAREN RENAULT          | 00:30.000" + System.lineSeparator();
+        String actual = formatter.format(racersList, 5);
+        assertEquals(actual, expected);
     }
 
     @Test
-    void givenManyRacers_whenFormatData_thenReturnManyStrings() {
-        List<Racer> expected = new ArrayList<>();
-        expected.add(new Racer("Sebastian Vettel", "FERRARI", Duration.parse("PT1M4.415S")));
-        expected.add(new Racer("Daniel Ricciardo", "RED BULL RACING TAG HEUER", Duration.parse("PT1M12.013S")));
-        expected.add(new Racer("Valtteri Bottas", "MERCEDES", Duration.parse("PT1M12.434S")));
-
-        String expectedString = " 1.Sebastian Vettel|FERRARI                  |1:04.415" + System.lineSeparator()
-                + " 2.Daniel Ricciardo|RED BULL RACING TAG HEUER|1:12.013" + System.lineSeparator()
-                + "--------------------------------------------" + System.lineSeparator()
-                + " 3.Valtteri Bottas |MERCEDES                 |1:12.434" + System.lineSeparator();
-
-        String actualString = formatter.format(expected, 2);
-        assertEquals(actualString, expectedString);
+    void givenThreeRacers_whenFormatData_thenReturSortedWithHush() {
+        String expected = " 1. Sebastian Vettel | FERRARI                  | 00:10.000" + System.lineSeparator()
+                + " 2. Daniel Ricciardo | RED BULL RACING TAG HEUER| 00:20.000" + System.lineSeparator()
+                + "-----------------------------------------------------------" + System.lineSeparator()
+                + " 3. Stoffel Vandoorne| MCLAREN RENAULT          | 00:30.000" + System.lineSeparator();
+        String actual = formatter.format(racersList, 2);
+        assertEquals(actual, expected);
     }
 }

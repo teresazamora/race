@@ -8,14 +8,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class RacerParser {
-    static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss.SSS");
 
-    public List<Racer> racersTable(List<String> startFile, List<String> endFile, List<String> abbreviationFile) {
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss.SSS");
+
+    public List<Racer> inputRacesList(List<String> startFile, List<String> endFile, List<String> abbreviationFile) {
         Map<String, LocalDateTime> startTime = getTimeList(startFile);
         Map<String, LocalDateTime> endTime = getTimeList(endFile);
 
-        return abbreviationFile.stream().map(lines -> lines.split("_")).map(
-                line -> new Racer(line[1], line[2], Duration.between(startTime.get(line[0]), endTime.get(line[0]))))
+        return abbreviationFile.stream().map(lines -> lines.split("_"))
+                .map(line -> new Racer(line[1], line[2],
+                        Duration.between(startTime.get(line[0]), endTime.get(line[0])).toMillis()))
                 .collect(Collectors.toList());
     }
 

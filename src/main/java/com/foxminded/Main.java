@@ -18,7 +18,7 @@ public class Main {
         List<String> endFile = (fileReader.readFile("end.log"));
         List<String> abbreviationFile = (fileReader.readFile("abbreviations.txt"));
 
-        List<Racer> racer = racerParser.racersTable(startFile, endFile, abbreviationFile);
+        List<Racer> racer = racerParser.inputRacesList(startFile, endFile, abbreviationFile);
         Formatter formatter = new Formatter();
         System.out.println(formatter.format(racer, topPilots));
     }
