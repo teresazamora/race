@@ -25,21 +25,37 @@ public class Racer {
     public Long getTime() {
         return time;
     }
-    
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Racer racer = (Racer) o;
-        return Objects.equals(name, racer.name) && Objects.equals(team, racer.team) && Objects.equals(time, racer.time);
-    }
 
     @Override
     public int hashCode() {
         return Objects.hash(name, team, time);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Racer other = (Racer) obj;
+
+        if (team == null) {
+            if (other.team != null)
+                return false;
+        } else if (!team.equals(other.team))
+            return false;
+        if (time == null) {
+            if (other.time != null)
+                return false;
+        } else if (!time.equals(other.time))
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        return true;
     }
 }

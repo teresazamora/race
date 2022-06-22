@@ -11,7 +11,7 @@ public class RacerParser {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss.SSS");
 
-    public List<Racer> inputRacesList(List<String> startFile, List<String> endFile, List<String> abbreviationFile) {
+    public List<Racer> getRacers(List<String> startFile, List<String> endFile, List<String> abbreviationFile) {
         Map<String, LocalDateTime> startTime = getTimeList(startFile);
         Map<String, LocalDateTime> endTime = getTimeList(endFile);
 
